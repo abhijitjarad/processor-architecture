@@ -20,3 +20,31 @@ sum = sum + number[i];
 TRISB =0; //initialize Port_B as output
 PORTB = sum; // from sum to PORT_B
 }
+
+
+
+
+
+/*
+ * File:   multiply.c
+ * Author: Abhijit
+ *
+ * Created on April 25, 2025, 8:53 PM
+ */
+
+
+#include <xc.h>
+#include <pic18f452.h>
+void main(void)
+{
+    int num1, num2;
+    int result ,i;
+    result = 0;
+    num1 = 0x23;
+    num2 = 0x10;
+    for (i=1; i<=num2; i++)
+    {
+        result = result + num1;
+    }
+    PROD= result;
+}
