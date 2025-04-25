@@ -1,0 +1,54 @@
+/*
+ * File:   array sorting ascending.c
+ * Author: Abhijit
+ *
+ * Created on April 25, 2025, 9:44 PM
+ */
+
+#include <xc.h>
+#include <pic18f452.h>
+
+void main(void) {
+int i,j,temp;
+int num_asc[] = {10,2,5,1,6};
+for(i=0;i<=4;i++) //point to LHS number
+{
+for(j=i+1;j<=4;j++) // point to RHS number
+{
+if (num_asc[i]>num_asc[j]) // if LHS &gt; RHS , change the position
+{
+temp = num_asc[i];
+num_asc[i] =num_asc[j];
+num_asc[j]= temp;
+}
+}
+}
+}
+
+
+
+/*
+ * File:   array sorting descending.c
+ * Author: Abhijit
+ *
+ * Created on April 25, 2025, 9:52 PM
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <pic18f4550.h>
+void main(void) {
+int i,j,temp;
+int num_asc[] = {10,2,5,1,6};
+
+for(i=0;i<=4;i++){ //point to LHS number
+for(j=i+1;j<=4;j++) { // point to RHS number
+if (num_asc[i]<num_asc[j]) { // if LHS &lt; RHS , change the position
+
+temp = num_asc[i];
+num_asc[i] =num_asc[j];
+num_asc[j]= temp;
+}
+}
+}
+}
