@@ -20,6 +20,9 @@ sum = sum + number[i];
 TRISB =0; //initialize Port_B as output
 PORTB = sum; // from sum to PORT_B
 }
+output:
+
+https://github.com/abhijitjarad/processor-architecture/blob/cb2174370d8ea347482dbee8ddcf6dd693e40939/Screenshot%202025-04-25%20204443.png
 
 
 
