@@ -1,0 +1,142 @@
+/*
+ * File:   lm35.c
+ * Author: Abhijit
+ *
+ * Created on April 26, 2025, 10:14 PM
+ */
+
+#include <xc.h>
+
+// Configuration bit settings
+#pragma config OSC = HS    // High-speed Oscillator
+#pragma config WDT = OFF   // Watchdog Timer disabled
+#pragma config LVP = OFF   // Low Voltage Programming disabled
+#pragma config PBADEN = OFF // PORTB<4:0> pins configured as digital I/O on reset
+
+// LCD Connection Definitions
+#define LCD_DATA PORTD       // LCD data port
+#define en PORTEbits.RE2     // Enable signal
+#define rw PORTEbits.RE1     // Read/Write signal
+#define rs PORTEbits.RE0     // Register Select signal
+
+// Function Prototypes
+void ADC_Init(void);
+unsigned int Get_ADC_Result(void);
+void Start_Conversion(void);
+void msdelay(unsigned int time);
+void init_LCD(void);
+void LCD_command(unsigned char cmd);
+void LCD_data(unsigned char data);
+void LCD_write_string(char *str);
+
+// Main Program
+void main(void)
+{
+    char msg1[] = "Jarad Abhijit";
+    char msg2[] = "Temp.:";
+    char msg3[] = {0xDF, 'C', '\0'};  // Degree symbol followed by 'C'
+    unsigned int adc_val;
+    unsigned char temp, hundreds, tens, ones;
+
+    // Configure Ports
+    ADCON1 = 0x0F; // All digital
+    TRISD = 0x00;  // LCD data port as output
+    TRISE = 0x00;  // LCD control pins as output
+
+    ADC_Init();    // Initialize ADC
+    init_LCD();    // Initialize LCD
+
+    LCD_write_string(msg1);  // Display welcome message
+    LCD_command(0xC0);       // Move to second line
+    LCD_write_string(msg2);  // Display "Temp.:"
+
+    while(1)
+    {
+        Start_Conversion();               // Start ADC conversion
+        adc_val = Get_ADC_Result();        // Get ADC result
+        adc_val = adc_val / 2;             // Adjust for LM35 scaling
+
+        LCD_command(0xC7);                 // Move to 8th position on 2nd line
+
+        temp = (unsigned char)adc_val;     // Cast to 8-bit
+        hundreds = (temp / 100) + '0';      // Get hundreds digit
+        tens = ((temp % 100) / 10) + '0';   // Get tens digit
+        ones = (temp % 10) + '0';           // Get ones digit
+
+        LCD_data(hundreds);
+        LCD_data(tens);
+        LCD_data(ones);
+        LCD_write_string(msg3);             // Display °C symbol
+
+        msdelay(300);                      // Small delay
+    }
+}
+
+// Function Definitions
+
+void ADC_Init(void)
+{
+    ADCON0 = 0b00000001;   // Select AN0 channel, ADC OFF initially
+    ADCON1 = 0b00001110;   // Set AN0 as analog, VDD/VSS references
+    ADCON2 = 0b10001110;   // Right justified, acquisition time 2TAD, ADC clock = Fosc/64
+    ADCON0bits.ADON = 1;   // Turn ON ADC
+}
+
+void Start_Conversion(void)
+{
+    ADCON0bits.GO = 1;     // Start conversion
+}
+
+unsigned int Get_ADC_Result(void)
+{
+    while(ADCON0bits.GO);  // Wait until conversion is complete
+    return ((ADRESH << 8) + ADRESL);  // Return 10-bit result
+}
+
+void msdelay(unsigned int time)
+{
+    unsigned int i, j;
+    for (i = 0; i < time; i++)
+        for (j = 0; j < 275; j++);  // ~1 ms delay
+}
+
+void init_LCD(void)
+{
+    LCD_command(0x38);  // Initialize LCD 16x2 in 8-bit mode
+    msdelay(15);
+    LCD_command(0x01);  // Clear display
+    msdelay(15);
+    LCD_command(0x0C);  // Display ON, cursor OFF
+    msdelay(15);
+    LCD_command(0x80);  // Move cursor to first line
+    msdelay(15);
+}
+
+void LCD_command(unsigned char cmd)
+{
+    LCD_DATA = cmd;
+    rs = 0;   // Command mode
+    rw = 0;   // Write mode
+    en = 1;
+    msdelay(2);
+    en = 0;
+}
+
+void LCD_data(unsigned char data)
+{
+    LCD_DATA = data;
+    rs = 1;   // Data mode
+    rw = 0;   // Write mode
+    en = 1;
+    msdelay(2);
+    en = 0;
+}
+
+void LCD_write_string(char *str)
+{
+    while(*str)
+    {
+        LCD_data(*str++);
+        msdelay(2);
+    }
+}
