@@ -1,0 +1,31 @@
+/*
+ * File:   LED.c
+ * Author: Abhijit
+ *
+ * Created on April 26, 2025, 10:04 AM
+ */
+
+
+#include<xc.h> //Include Controller specific.h
+//Function Prototypes
+void msdelay (unsigned int time);//Function for delay
+//Start of Program Code
+void main()
+{
+ADCON1=0x0F; //To disable the all analog inputs
+TRISD=0x00; //To configure PORTD asoutput
+while(1) //While loop for repeatedoperation
+{
+PORTD=0xFF; //Turn ON the all LED’s
+msdelay(250); //Delay
+PORTD=0x00; //Turn OFF the all LED’s
+msdelay(250); //Delay
+}
+} //End of theProgram
+//Function Definition for delay degeneration void
+void msdelay (unsigned int time)
+{
+int i, j;
+for (i = 0; i < time; i++)
+for (j = 0; j < 710; j++);//Calibrated for a 1 ms delay in MPLAB
+}
