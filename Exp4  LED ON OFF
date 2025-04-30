@@ -16,9 +16,9 @@ ADCON1=0x0F; //To disable the all analog inputs
 TRISD=0x00; //To configure PORTD asoutput
 while(1) //While loop for repeatedoperation
 {
-PORTD=0xFF; //Turn ON the all LED’s
+PORTD=0xFF; //Turn ON the all LED?s
 msdelay(250); //Delay
-PORTD=0x00; //Turn OFF the all LED’s
+PORTD=0x00; //Turn OFF the all LED?s
 msdelay(250); //Delay
 }
 } //End of theProgram
