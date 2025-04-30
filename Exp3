@@ -4,26 +4,26 @@
  *
  * Created on April 25, 2025, 9:44 PM
  */
-
 #include <xc.h>
-#include <pic18f452.h>
-
+#include<pic18f452.h>
 void main(void) {
 int i,j,temp;
-int num_asc[] = {10,2,5,1,6};
-for(i=0;i<=4;i++) //point to LHS number
+int asc[]={0x09,0x04,0x02,0x05};
+for(i=0;i<=3;i++)
 {
-for(j=i+1;j<=4;j++) // point to RHS number
+for(j=i+1;j<=3;j++)
 {
-if (num_asc[i]>num_asc[j]) // if LHS &gt; RHS , change the position
+if(asc[i]>asc[j])
 {
-temp = num_asc[i];
-num_asc[i] =num_asc[j];
-num_asc[j]= temp;
+temp=asc[i];
+asc[i]=asc[j];
+asc[j]=temp;
 }
 }
 }
 }
+
+
 
 
 
@@ -52,3 +52,4 @@ num_asc[j]= temp;
 }
 }
 }
+
